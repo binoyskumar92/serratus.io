@@ -19,47 +19,38 @@ const switchSize = "lg";  // Tailwind prefix to switch between landscape/portrai
 const Explorer = (props) => {
     const queryFilters = React.useRef(new QueryFilters());
 
-    var queryTypeFromParam = null;
-    var queryValueFromParam = null;
-    var identityLimsFromParam = null;
-    var coverageLimsFromParam = null;
+    var queryPresent = false;
     var urlParams = new URLSearchParams(props.location.search);
     queryTypes.forEach(queryType => {
         var queryValue = urlParams.get(queryType);
         // assuming mutually exclusive parameters
         if (queryValue) {
-            queryTypeFromParam = queryType;
-            queryValueFromParam = queryValue;
+            queryFilters.current.queryType = queryType;
+            queryFilters.current.queryValue = queryValue;
+            queryPresent = true;
         }
     });
-    var queryPresent = queryTypeFromParam !== null;
     var identityParamStr = urlParams.get("identity");
-    if (identityParamStr) identityLimsFromParam = parseRange(identityParamStr, identityDomain);
+    if (identityParamStr) queryFilters.current.identityLims = parseRange(identityParamStr, identityDomain);
     var coverageParamStr = urlParams.get("coverage");
-    if (coverageParamStr) coverageLimsFromParam = parseRange(coverageParamStr, coverageDomain);
+    if (coverageParamStr) queryFilters.current.scoreLims = parseRange(coverageParamStr, coverageDomain);
 
     const willMount = React.useRef(true);
     if (willMount.current) {
         // set defaults
-        if (!identityLimsFromParam) { identityLimsFromParam = identityDomain }
-        if (!coverageLimsFromParam) { coverageLimsFromParam = [50, 100] }
+        if (!queryFilters.current.identityLims) { queryFilters.current.identityLims = identityDomain }
+        if (!queryFilters.current.scoreLims) { queryFilters.current.scoreLims = [50, 100] }
         // family must be valid for initial chart render
-        if (!queryTypeFromParam) { queryTypeFromParam = "family" }
-        if (!queryValueFromParam) { queryValueFromParam = "Coronaviridae" }
-
-        queryFilters.current.queryType = queryTypeFromParam;
-        queryFilters.current.queryValue = queryValueFromParam;
-        [queryFilters.current.identityMin, queryFilters.current.identityMax] = identityLimsFromParam;
-        [queryFilters.current.scoreMin, queryFilters.current.scoreMax] = coverageLimsFromParam;
-
+        if (!queryFilters.current.queryType) { queryFilters.current.queryType = "family" }
+        if (!queryFilters.current.queryValue) { queryFilters.current.queryValue = "Coronaviridae" }
         willMount.current = false;
     }
 
     // values that change with user input (QueryBuilder)
     const [queryType, setQueryType] = React.useState(queryFilters.current.queryType);
     const [queryValue, setQueryValue] = React.useState(queryFilters.current.queryValue);
-    const identityLimsRef = React.useRef([queryFilters.current.identityMin, queryFilters.current.identityMax]);
-    const coverageLimsRef = React.useRef([queryFilters.current.scoreMin, queryFilters.current.scoreMax]);
+    const identityLimsRef = React.useRef(queryFilters.current.identityLims);
+    const coverageLimsRef = React.useRef(queryFilters.current.scoreLims);
 
     return (
         <div className={`flex flex-col ${switchSize}:flex-row p-4 min-h-screen sm:bg-gray-200`}>
@@ -86,8 +77,8 @@ const Explorer = (props) => {
                     <Result
                         queryType={queryFilters.current.queryType}
                         queryValue={queryFilters.current.queryValue}
-                        identityLims={[queryFilters.current.identityMin, queryFilters.current.identityMax]}
-                        coverageLims={[queryFilters.current.scoreMin, queryFilters.current.scoreMax]} />
+                        identityLims={queryFilters.current.identityLims}
+                        coverageLims={queryFilters.current.scoreLims} />
                 }
                 <div className={`${switchSize}:hidden`}>
                     <DataReference />

@@ -66,12 +66,8 @@ export const constructRangeStr = (begin, end) => {
 }
 
 export class QueryFilters {
-    constructor(queryType, queryValue, identityMin, identityMax, scoreMin, scoreMax) {
-        this.queryType = queryType;
-        this.queryValue = queryValue;
-        this.identityMin = identityMin;
-        this.identityMax = identityMax;
-        this.scoreMin = scoreMin;
-        this.scoreMax = scoreMax;
-    }
+    queryType;
+    queryValue;
+    identityLims;
+    scoreLims;
 }

@@ -27,10 +27,12 @@ import {
 import allFamilyData from '../data/SerratusIO_scoreID.json';
 
 const QueryBuilder = (props) => {
+    const queryFilters = props.queryFilters;
     const sliderIdentityLimsRef = props.identityLimsRef;
     const sliderCoverageLimsRef = props.coverageLimsRef;
-    const queryType = props.queryType;
-    const setQueryType = props.setQueryType;
+    // const [queryType, setQueryType] = React.useState(queryFilters.queryType);
+    const queryType = queryFilters.queryType;
+    // const [queryValue, setQueryValue] = React.useState(queryFilters.queryValue);
     const queryValue = props.queryValue;
     const setQueryValue = props.setQueryValue;
 
@@ -38,8 +40,8 @@ const QueryBuilder = (props) => {
     const [initialFamily] = React.useState('Coronaviridae');
     const [initialIdentityLims] = React.useState(props.identityLimsRef.current);
     const [initialCoverageLims] = React.useState(props.coverageLimsRef.current);
-    const [initialQueryType] = React.useState(props.queryType);
-    const [initialQueryValue] = React.useState(props.queryValue);
+    const [initialQueryType] = React.useState(queryFilters.queryType);
+    const [initialQueryValue] = React.useState(queryFilters.queryValue);
 
     const [family, setFamily] = React.useState(initialFamily);
     const [genbank, setGenbank] = React.useState();
@@ -89,7 +91,8 @@ const QueryBuilder = (props) => {
     }, [family, genbank, run, queryType, setQueryValue]);
 
     const queryTypeChange = (e) => {
-        setQueryType(e.target.value);
+        queryFilters.queryType = e.target.value;
+        // setQueryType(queryFilters.queryType);
     }
 
     const goToQuery = () => {
@@ -115,9 +118,9 @@ const QueryBuilder = (props) => {
     return (
         <div className="flex-grow">
             <div className="flex flex-row justify-center">
-                <InputOption className="mx-2" value="family" displayText="Family" checked={queryType === "family"} onChange={queryTypeChange} />
-                <InputOption className="mx-2" value="genbank" displayText="GenBank" checked={queryType === "genbank"} onChange={queryTypeChange} />
-                <InputOption className="mx-2" value="run" displayText="SRA Run" checked={queryType === "run"} onChange={queryTypeChange} />
+                <InputOption value="family" displayText="Family" checked={queryType === "family"} onChange={queryTypeChange} />
+                <InputOption value="genbank" displayText="GenBank" checked={queryType === "genbank"} onChange={queryTypeChange} />
+                <InputOption value="run" displayText="SRA Run" checked={queryType === "run"} onChange={queryTypeChange} />
             </div>
             <div label="inputs">
                 <div className={queryType === "family" ? "visible" : "hidden"}>

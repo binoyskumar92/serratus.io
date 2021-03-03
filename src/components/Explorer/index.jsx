@@ -10,16 +10,14 @@ import {
     coverageDomain,
     parseRange,
     queryTypes,
-    resultSectionId
+    resultSectionId,
+    QueryFilters,
 } from "./ExplorerHelpers";
 
 const switchSize = "lg";  // Tailwind prefix to switch between landscape/portrait mode
 
 const Explorer = (props) => {
-    const queryTypeStaticRef = React.useRef();
-    const queryValueStaticRef = React.useRef();
-    const identityLimsStaticRef = React.useRef();
-    const coverageLimsStaticRef = React.useRef();
+    const queryFilters = React.useRef(new QueryFilters());
 
     var queryTypeFromParam = null;
     var queryValueFromParam = null;
@@ -49,24 +47,24 @@ const Explorer = (props) => {
         if (!queryTypeFromParam) { queryTypeFromParam = "family" }
         if (!queryValueFromParam) { queryValueFromParam = "Coronaviridae" }
 
-        queryTypeStaticRef.current = (queryTypeFromParam);
-        queryValueStaticRef.current = (queryValueFromParam);
-        identityLimsStaticRef.current = (identityLimsFromParam);
-        coverageLimsStaticRef.current = (coverageLimsFromParam);
+        queryFilters.current.queryType = queryTypeFromParam;
+        queryFilters.current.queryValue = queryValueFromParam;
+        [queryFilters.current.identityMin, queryFilters.current.identityMax] = identityLimsFromParam;
+        [queryFilters.current.scoreMin, queryFilters.current.scoreMax] = coverageLimsFromParam;
 
         willMount.current = false;
     }
 
     // values that change with user input (QueryBuilder)
-    const [queryType, setQueryType] = React.useState(queryTypeStaticRef.current);
-    const [queryValue, setQueryValue] = React.useState(queryValueStaticRef.current);
-    const identityLimsRef = React.useRef(identityLimsStaticRef.current);
-    const coverageLimsRef = React.useRef(coverageLimsStaticRef.current);
+    const [queryType, setQueryType] = React.useState(queryFilters.current.queryType);
+    const [queryValue, setQueryValue] = React.useState(queryFilters.current.queryValue);
+    const identityLimsRef = React.useRef([queryFilters.current.identityMin, queryFilters.current.identityMax]);
+    const coverageLimsRef = React.useRef([queryFilters.current.scoreMin, queryFilters.current.scoreMax]);
 
     return (
         <div className={`flex flex-col ${switchSize}:flex-row p-4 min-h-screen sm:bg-gray-200`}>
             <Helmet>
-                <title>Serratus | {queryValueStaticRef.current ? `${queryValueStaticRef.current}` : "Explorer"}</title>
+                <title>Serratus | {queryFilters.current.queryValue ? `${queryFilters.current.queryValue}` : "Explorer"}</title>
             </Helmet>
             <div className={`flex flex-col px-4 py-2 w-full ${switchSize}:w-1/3 ${classesBoxBorder}`}>
                 <QueryBuilder
@@ -86,10 +84,10 @@ const Explorer = (props) => {
                 {!queryPresent ?
                     <Intro /> :
                     <Result
-                        queryType={queryTypeStaticRef.current}
-                        queryValue={queryValueStaticRef.current}
-                        identityLims={identityLimsStaticRef.current}
-                        coverageLims={coverageLimsStaticRef.current} />
+                        queryType={queryFilters.current.queryType}
+                        queryValue={queryFilters.current.queryValue}
+                        identityLims={[queryFilters.current.identityMin, queryFilters.current.identityMax]}
+                        coverageLims={[queryFilters.current.scoreMin, queryFilters.current.scoreMax]} />
                 }
                 <div className={`${switchSize}:hidden`}>
                     <DataReference />

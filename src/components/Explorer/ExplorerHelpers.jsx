@@ -12,22 +12,6 @@ export const viridisCssGradient = "linear-gradient(90deg, #440154, #482475, #414
 
 // functions
 
-export const getIdentitySliderLabel = (type) => {
-    let typeMap = {
-        family: "Average alignment identity (%)",
-        genbank: "Alignment identity (%)"
-    };
-    return typeMap[type];
-}
-
-export const getCoverageSliderLabel = (type) => {
-    let typeMap = {
-        family: "Score (pangenome coverage)",
-        genbank: "Coverage"
-    };
-    return typeMap[type];
-}
-
 export const InputOption = (props) => {
     return (
         <div className={props.className}>

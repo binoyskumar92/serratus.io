@@ -5,6 +5,9 @@ import genbankEntries from '../data/cov3ma.genbank.json';
 
 const getLabel = (genbank) => {
     var info = genbankEntries[genbank];
+    if (!info) {
+        return "";
+    }
     return `[${genbank}] ${info.title}`;
 }
 

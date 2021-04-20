@@ -19,7 +19,9 @@
     "react/destructuring-assignment": "warn",
     "no-unused-vars": ["warn", {"args": "after-used", "argsIgnorePattern": "^_"}],
     "no-var": "warn",
+    // "sort-imports": "warn",
     "import/no-default-export": "warn",
+    "import/order": ["error", {"alphabetize": {"order": "asc", "caseInsensitive": true}}],
     "prettier/prettier": "warn" // always last
   },
   "settings": {
